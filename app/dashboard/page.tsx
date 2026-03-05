@@ -189,6 +189,7 @@ function DashboardContent() {
         <AddInvoiceModal
           onClose={() => setShowModal(false)}
           onAdded={fetchInvoices}
+          getAuthHeader={getAuthHeader}
         />
       )}
     </div>

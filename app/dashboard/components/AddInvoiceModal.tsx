@@ -1,19 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-)
 
 interface AddInvoiceModalProps {
   onClose: () => void
   onAdded: () => void
+  getAuthHeader: () => Promise<Record<string, string>>
 }
 
-export default function AddInvoiceModal({ onClose, onAdded }: AddInvoiceModalProps) {
+export default function AddInvoiceModal({ onClose, onAdded, getAuthHeader }: AddInvoiceModalProps) {
   const [form, setForm] = useState({
     clientName: '',
     clientEmail: '',
@@ -34,13 +29,12 @@ export default function AddInvoiceModal({ onClose, onAdded }: AddInvoiceModalPro
     setError('')
 
     try {
-      const { data: sessionData } = await supabase.auth.getSession()
-      const token = sessionData.session?.access_token
+      const authHeaders = await getAuthHeader()
       const res = await fetch('/api/invoices', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          ...authHeaders,
         },
         body: JSON.stringify({
           client_name: form.clientName,
