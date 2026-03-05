@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 const supabase = createClient(
@@ -17,13 +16,11 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
-
     const { error } = await supabase.auth.signInWithPassword({ email, password })
-
     if (error) {
       setError(error.message)
       setLoading(false)
@@ -33,64 +30,53 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-65px)] flex items-center justify-center px-6">
+    <div className="min-h-[calc(100vh-56px)] flex items-center justify-center px-6 py-12 bg-slate-50">
       <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold text-gray-900">Welcome back</h1>
-          <p className="mt-2 text-sm text-gray-500">Log in to your Nudge account.</p>
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-slate-900">Welcome back</h1>
+          <p className="text-slate-500 text-sm mt-1">Log in to your Nudge account</p>
         </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
           {error && (
-            <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+            <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
               {error}
             </div>
           )}
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email address
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-              placeholder="you@example.com"
-              className="w-full border border-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-              placeholder="Your password"
-              className="w-full border border-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-gray-900 text-white py-2.5 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors disabled:opacity-50 mt-2"
-          >
-            {loading ? 'Logging in…' : 'Log in'}
-          </button>
-        </form>
-
-        <p className="mt-6 text-center text-sm text-gray-500">
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="you@example.com"
+                className="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+                className="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-slate-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-slate-700 transition-colors disabled:opacity-50 mt-2"
+            >
+              {loading ? 'Logging in…' : 'Log in'}
+            </button>
+          </form>
+        </div>
+        <p className="text-center text-sm text-slate-500 mt-6">
           Don&apos;t have an account?{' '}
-          <Link href="/signup" className="text-gray-900 font-medium hover:underline">
-            Start free trial
-          </Link>
+          <a href="/signup" className="text-slate-900 font-medium hover:underline">Sign up free</a>
         </p>
       </div>
     </div>
