@@ -5,6 +5,7 @@ import { createClient } from '@supabase/supabase-js'
 import { useRouter, useSearchParams } from 'next/navigation'
 import InvoiceTable, { Invoice } from './components/InvoiceTable'
 import AddInvoiceModal from './components/AddInvoiceModal'
+import ImportCSVModal from './components/ImportCSVModal'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
@@ -17,6 +18,7 @@ function DashboardContent() {
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
+  const [showImport, setShowImport] = useState(false)
   const [markingPaid, setMarkingPaid] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [hasSubscription, setHasSubscription] = useState(true) // optimistic: hide banner until we know
@@ -117,12 +119,20 @@ function DashboardContent() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-semibold text-gray-900">Invoices</h1>
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-gray-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors"
-        >
-          + Add invoice
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setShowImport(true)}
+            className="border border-gray-200 text-gray-600 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors"
+          >
+            Import CSV
+          </button>
+          <button
+            onClick={() => setShowModal(true)}
+            className="bg-gray-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors"
+          >
+            + Add invoice
+          </button>
+        </div>
       </div>
 
       {/* Subscription banner */}
@@ -189,6 +199,13 @@ function DashboardContent() {
         <AddInvoiceModal
           onClose={() => setShowModal(false)}
           onAdded={fetchInvoices}
+          getAuthHeader={getAuthHeader}
+        />
+      )}
+      {showImport && (
+        <ImportCSVModal
+          onClose={() => setShowImport(false)}
+          onImported={fetchInvoices}
           getAuthHeader={getAuthHeader}
         />
       )}
