@@ -59,11 +59,17 @@ function DashboardContent() {
     }
   }
 
+  const getAuthHeader = async (): Promise<Record<string, string>> => {
+    const { data } = await supabase.auth.getSession()
+    return data.session ? { 'Authorization': `Bearer ${data.session.access_token}` } : {}
+  }
+
   const fetchInvoices = async () => {
     setLoading(true)
     setError('')
     try {
-      const res = await fetch('/api/invoices')
+      const headers = await getAuthHeader()
+      const res = await fetch('/api/invoices', { headers })
       if (!res.ok) throw new Error('Failed to load invoices')
       const data = await res.json()
       setInvoices(data.invoices ?? [])
@@ -77,9 +83,10 @@ function DashboardContent() {
   const handleMarkPaid = async (id: string) => {
     setMarkingPaid(id)
     try {
+      const authHeaders = await getAuthHeader()
       const res = await fetch(`/api/invoices/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({ status: 'paid' }),
       })
       if (!res.ok) throw new Error()
