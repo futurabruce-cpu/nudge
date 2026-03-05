@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import InvoiceTable, { Invoice } from './components/InvoiceTable'
 import AddInvoiceModal from './components/AddInvoiceModal'
 import ImportCSVModal from './components/ImportCSVModal'
@@ -120,6 +121,12 @@ function DashboardContent() {
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-semibold text-gray-900">Invoices</h1>
         <div className="flex gap-2">
+          <Link
+            href="/dashboard/settings"
+            className="border border-gray-200 text-gray-600 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors"
+          >
+            Settings
+          </Link>
           <button
             onClick={() => setShowImport(true)}
             className="border border-gray-200 text-gray-600 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors"
